@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
-import axiosInstance from '../api'; // Adjust path as needed
-import { toast } from 'react-toastify';
+import { useState, useCallback } from "react";
+import axiosInstance from "../api"; // Adjust path as needed
+import { toast } from "react-toastify";
 
 // Hook for adding staff member
 export const useAddStaff = () => {
@@ -12,22 +12,32 @@ export const useAddStaff = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.post('/staff/addStaff', staffData);
+      const response = await axiosInstance.post("/staff/addStaff", staffData);
       const responseData = response.data;
 
       if (responseData.success) {
-        return { success: true, staff: responseData.staff, message: responseData.message };
+        return {
+          success: true,
+          staff: responseData.staff,
+          message: responseData.message,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to add staff member' });
-        toast.error(responseData.message || 'Failed to add staff member');
+        setError({
+          message: responseData.message || "Failed to add staff member",
+        });
+        toast.error(responseData.message || "Failed to add staff member");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to add staff member',
+        message: "Failed to add staff member",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to add staff member');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to add staff member"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -52,23 +62,29 @@ export const useGetAllStaff = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.get('/staff/staff');
+      const response = await axiosInstance.get("/staff/staff");
       const responseData = response.data;
 
       if (responseData.success) {
         setStaff(responseData.staff);
         return { success: true, staff: responseData.staff };
       } else {
-        setError({ message: responseData.message || 'Failed to fetch staff members' });
-        toast.error(responseData.message || 'Failed to fetch staff members');
+        setError({
+          message: responseData.message || "Failed to fetch staff members",
+        });
+        toast.error(responseData.message || "Failed to fetch staff members");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to fetch staff members',
+        message: "Failed to fetch staff members",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to fetch staff members');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch staff members"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -82,7 +98,6 @@ export const useGetAllStaff = () => {
 
   return { staff, loading, error, getAllStaff, reset };
 };
-
 
 export const useGetStaffById = (id) => {
   const [staff, setStaff] = useState(null);
@@ -102,16 +117,22 @@ export const useGetStaffById = (id) => {
         setStaff(responseData.staff);
         return { success: true, staff: responseData.staff };
       } else {
-        setError({ message: responseData.message || 'Failed to fetch staff member' });
-        toast.error(responseData.message || 'Failed to fetch staff member');
+        setError({
+          message: responseData.message || "Failed to fetch staff member",
+        });
+        toast.error(responseData.message || "Failed to fetch staff member");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to fetch staff member',
+        message: "Failed to fetch staff member",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to fetch staff member');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch staff member"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -136,22 +157,35 @@ export const useUpdateStaff = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.put(`/staff/staff/${id}`, updateData);
+      const response = await axiosInstance.put(
+        `/staff/staff/${id}`,
+        updateData
+      );
       const responseData = response.data;
 
       if (responseData.success) {
-        return { success: true, staff: responseData.staff, message: responseData.message };
+        return {
+          success: true,
+          staff: responseData.staff,
+          message: responseData.message,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to update staff member' });
-        toast.error(responseData.message || 'Failed to update staff member');
+        setError({
+          message: responseData.message || "Failed to update staff member",
+        });
+        toast.error(responseData.message || "Failed to update staff member");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to update staff member',
+        message: "Failed to update staff member",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to update staff member');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to update staff member"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -170,7 +204,7 @@ export const useDeleteStaff = () => {
   const [error, setError] = useState(null);
 
   const deleteStaff = useCallback(async (id) => {
-    if (!id) return { success: false, message: 'Invalid staff ID' };
+    if (!id) return { success: false, message: "Invalid staff ID" };
 
     setLoading(true);
     setError(null);
@@ -180,16 +214,19 @@ export const useDeleteStaff = () => {
       const responseData = response.data;
 
       if (responseData.success) {
-        toast.success(responseData.message || 'Staff deleted successfully');
+        toast.success(responseData.message || "Staff deleted successfully");
         return { success: true, message: responseData.message };
       } else {
-        const errMsg = responseData.message || 'Failed to delete staff member';
+        const errMsg = responseData.message || "Failed to delete staff member";
         setError({ message: errMsg });
         toast.error(errMsg);
         return { success: false, message: errMsg };
       }
     } catch (err) {
-      const errMsg = err.response?.data?.message || err.message || 'Failed to delete staff member';
+      const errMsg =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to delete staff member";
       setError({ message: errMsg });
       toast.error(errMsg);
       return { success: false, message: errMsg };
@@ -210,30 +247,47 @@ export const useAddWageIncrement = () => {
   const [error, setError] = useState(null);
 
   const addWageIncrement = useCallback(async (staffId, incrementData) => {
-    console.log('Submitting increment data:', incrementData);
+    if (!staffId || typeof staffId !== "string" || staffId.trim() === "") {
+      setError({ message: "Invalid Staff ID" });
+      toast.error("Invalid Staff ID");
+      return { success: false, message: "Invalid Staff ID" };
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axiosInstance.post(`/staff/addWageIncrement/${staffId}`, incrementData);
-      console.log('API response:', response);
-
+      const response = await axiosInstance.post(
+        `/staff/addWageIncrement/${staffId}`,
+        incrementData
+      );
+      console.log("API request payload:", incrementData); // Debug payload
       const responseData = response.data;
 
       if (responseData.success) {
-        return { success: true, wageIncrement: responseData.wageIncrement, message: responseData.message };
+        return {
+          success: true,
+          wageIncrement: responseData.wageIncrement,
+          message: responseData.message,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to add wage increment' });
-        toast.error(responseData.message || 'Failed to add wage increment');
+        setError({
+          message: responseData.message || "Failed to add wage increment",
+        });
+        toast.error(responseData.message || "Failed to add wage increment");
         return { success: false };
       }
     } catch (err) {
-      console.error('API error:', err.response?.data || err.message);
+      console.error("API error:", err.response?.data || err.message);
       setError({
-        message: 'Failed to add wage increment',
+        message: "Failed to add wage increment",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to add wage increment');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to add wage increment"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -251,41 +305,57 @@ export const useEditWageIncrement = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const editWageIncrement = useCallback(async (staffId, incrementId, incrementData) => {
-    console.log('Submitting edit increment data:', incrementData);
-    setLoading(true);
-    setError(null);
+  const editWageIncrement = useCallback(
+    async (staffId, incrementId, incrementData) => {
+      console.log("Submitting edit increment data:", incrementData);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await axiosInstance.put(`/staff/${staffId}/editWageIncrement/${incrementId}`, incrementData);
-      console.log('API response:', response);
+      try {
+        const response = await axiosInstance.put(
+          `/staff/${staffId}/editWageIncrement/${incrementId}`,
+          incrementData
+        );
+        console.log("API response:", response);
 
-      const responseData = response.data;
+        const responseData = response.data;
 
-      if (responseData.success) {
-        toast.success(responseData.message || 'Wage increment updated successfully');
-        return {
-          success: true,
-          wageIncrement: responseData.data.incrementRecord,
-          message: responseData.message
-        };
-      } else {
-        setError({ message: responseData.message || 'Failed to update wage increment' });
-        toast.error(responseData.message || 'Failed to update wage increment');
+        if (responseData.success) {
+          toast.success(
+            responseData.message || "Wage increment updated successfully"
+          );
+          return {
+            success: true,
+            wageIncrement: responseData.data.incrementRecord,
+            message: responseData.message,
+          };
+        } else {
+          setError({
+            message: responseData.message || "Failed to update wage increment",
+          });
+          toast.error(
+            responseData.message || "Failed to update wage increment"
+          );
+          return { success: false };
+        }
+      } catch (err) {
+        console.error("API error:", err.response?.data || err.message);
+        setError({
+          message: "Failed to update wage increment",
+          details: err.response?.data?.message || err.message,
+        });
+        toast.error(
+          err.response?.data?.message ||
+            err.message ||
+            "Failed to update wage increment"
+        );
         return { success: false };
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('API error:', err.response?.data || err.message);
-      setError({
-        message: 'Failed to update wage increment',
-        details: err.response?.data?.message || err.message,
-      });
-      toast.error(err.response?.data?.message || err.message || 'Failed to update wage increment');
-      return { success: false };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const reset = () => {
     setError(null);
@@ -293,7 +363,6 @@ export const useEditWageIncrement = () => {
 
   return { loading, error, editWageIncrement, reset };
 };
-
 
 export const useGetWageIncrementHistory = () => {
   const [incrementHistory, setIncrementHistory] = useState([]);
@@ -305,23 +374,37 @@ export const useGetWageIncrementHistory = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.get(`/staff/wageIncrementHistory/${staffId}`);
+      const response = await axiosInstance.get(
+        `/staff/wageIncrementHistory/${staffId}`
+      );
       const responseData = response.data;
 
       if (responseData.success) {
         setIncrementHistory(responseData.incrementHistory);
-        return { success: true, incrementHistory: responseData.incrementHistory };
+        return {
+          success: true,
+          incrementHistory: responseData.incrementHistory,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to fetch wage increment history' });
-        toast.error(responseData.message || 'Failed to fetch wage increment history');
+        setError({
+          message:
+            responseData.message || "Failed to fetch wage increment history",
+        });
+        toast.error(
+          responseData.message || "Failed to fetch wage increment history"
+        );
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to fetch wage increment history',
+        message: "Failed to fetch wage increment history",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to fetch wage increment history');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch wage increment history"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -346,22 +429,35 @@ export const useAddStaffAdvance = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.post(`/staff/addStaffAdvance/${staffId}`, advanceData);
+      const response = await axiosInstance.post(
+        `/staff/addStaffAdvance/${staffId}`,
+        advanceData
+      );
       const responseData = response.data;
 
       if (responseData.success) {
-        return { success: true, staffAdvance: responseData.staffAdvance, message: responseData.message };
+        return {
+          success: true,
+          staffAdvance: responseData.staffAdvance,
+          message: responseData.message,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to add staff advance' });
-        toast.error(responseData.message || 'Failed to add staff advance');
+        setError({
+          message: responseData.message || "Failed to add staff advance",
+        });
+        toast.error(responseData.message || "Failed to add staff advance");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to add staff advance',
+        message: "Failed to add staff advance",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to add staff advance');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to add staff advance"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -374,7 +470,6 @@ export const useAddStaffAdvance = () => {
 
   return { loading, error, addStaffAdvance, reset };
 };
-
 
 export const useDeleteStaffAdvance = () => {
   const [loading, setLoading] = useState(false);
@@ -391,16 +486,22 @@ export const useDeleteStaffAdvance = () => {
       if (responseData.success) {
         return { success: true, message: responseData.message };
       } else {
-        setError({ message: responseData.message || 'Failed to delete staff advance' });
-        toast.error(responseData.message || 'Failed to delete staff advance');
+        setError({
+          message: responseData.message || "Failed to delete staff advance",
+        });
+        toast.error(responseData.message || "Failed to delete staff advance");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to delete staff advance',
+        message: "Failed to delete staff advance",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to delete staff advance');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to delete staff advance"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -423,22 +524,35 @@ export const useAddStaffLeave = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.post(`/staff/addStaffLeave/${staffId}`, leaveData);
+      const response = await axiosInstance.post(
+        `/staff/addStaffLeave/${staffId}`,
+        leaveData
+      );
       const responseData = response.data;
 
       if (responseData.success) {
-        return { success: true, leave: responseData.leave, message: responseData.message };
+        return {
+          success: true,
+          leave: responseData.leave,
+          message: responseData.message,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to add staff leave' });
-        toast.error(responseData.message || 'Failed to add staff leave');
+        setError({
+          message: responseData.message || "Failed to add staff leave",
+        });
+        toast.error(responseData.message || "Failed to add staff leave");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to add staff leave',
+        message: "Failed to add staff leave",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to add staff leave');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to add staff leave"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -452,7 +566,6 @@ export const useAddStaffLeave = () => {
   return { loading, error, addStaffLeave, reset };
 };
 
-
 export const useGetStaffLeaves = () => {
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -463,23 +576,31 @@ export const useGetStaffLeaves = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.get(`/staff/getStaffLeaves/${staffId}`);
+      const response = await axiosInstance.get(
+        `/staff/getStaffLeaves/${staffId}`
+      );
       const responseData = response.data;
 
       if (responseData.success) {
         setLeaves(responseData.leaves);
         return { success: true, leaves: responseData.leaves };
       } else {
-        setError({ message: responseData.message || 'Failed to fetch staff leaves' });
-        toast.error(responseData.message || 'Failed to fetch staff leaves');
+        setError({
+          message: responseData.message || "Failed to fetch staff leaves",
+        });
+        toast.error(responseData.message || "Failed to fetch staff leaves");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to fetch staff leaves',
+        message: "Failed to fetch staff leaves",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to fetch staff leaves');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch staff leaves"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -494,7 +615,6 @@ export const useGetStaffLeaves = () => {
   return { leaves, loading, error, getStaffLeaves, reset };
 };
 
-
 export const useDeleteStaffLeave = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -504,22 +624,30 @@ export const useDeleteStaffLeave = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.delete(`/staff/deleteStaffLeave/${leaveId}`);
+      const response = await axiosInstance.delete(
+        `/staff/deleteStaffLeave/${leaveId}`
+      );
       const responseData = response.data;
 
       if (responseData.success) {
         return { success: true, message: responseData.message };
       } else {
-        setError({ message: responseData.message || 'Failed to delete staff leave' });
-        toast.error(responseData.message || 'Failed to delete staff leave');
+        setError({
+          message: responseData.message || "Failed to delete staff leave",
+        });
+        toast.error(responseData.message || "Failed to delete staff leave");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to delete staff leave',
+        message: "Failed to delete staff leave",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to delete staff leave');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to delete staff leave"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -543,22 +671,35 @@ export const useUpdateLeaveStatus = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.put(`/staff/updateLeaveStatus/${leaveId}`, { status });
+      const response = await axiosInstance.put(
+        `/staff/updateLeaveStatus/${leaveId}`,
+        { status }
+      );
       const responseData = response.data;
 
       if (responseData.success) {
-        return { success: true, leave: responseData.leave, message: responseData.message };
+        return {
+          success: true,
+          leave: responseData.leave,
+          message: responseData.message,
+        };
       } else {
-        setError({ message: responseData.message || 'Failed to update leave status' });
-        toast.error(responseData.message || 'Failed to update leave status');
+        setError({
+          message: responseData.message || "Failed to update leave status",
+        });
+        toast.error(responseData.message || "Failed to update leave status");
         return { success: false };
       }
     } catch (err) {
       setError({
-        message: 'Failed to update leave status',
+        message: "Failed to update leave status",
         details: err.response?.data?.message || err.message,
       });
-      toast.error(err.response?.data?.message || err.message || 'Failed to update leave status');
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to update leave status"
+      );
       return { success: false };
     } finally {
       setLoading(false);
@@ -572,44 +713,52 @@ export const useUpdateLeaveStatus = () => {
   return { loading, error, updateLeaveStatus, reset };
 };
 
-
 export const useGetPublicStaffById = () => {
   const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const getPublicStaffById = useCallback(async (staffId, startDate, endDate) => {
-    setLoading(true);
-    setError(null);
-    setStaff(null);
-    try {
-      let url = `staff/public/${staffId}`;
-      const params = new URLSearchParams();
-      if (startDate) params.append('startDate', startDate);
-      if (endDate) params.append('endDate', endDate);
-      if (params.toString()) url += `?${params.toString()}`;
+  const getPublicStaffById = useCallback(
+    async (staffId, startDate, endDate) => {
+      setLoading(true);
+      setError(null);
+      setStaff(null);
+      try {
+        let url = `staff/public/${staffId}`;
+        const params = new URLSearchParams();
+        if (startDate) params.append("startDate", startDate);
+        if (endDate) params.append("endDate", endDate);
+        if (params.toString()) url += `?${params.toString()}`;
 
-      const response = await axiosInstance.get(url);
-      const responseData = response.data;
-      if (responseData.success) {
-        setStaff(responseData);
-        return { success: true, staff: responseData };
-      } else {
-        setError({ message: responseData.message || 'Failed to fetch staff member' });
-        toast.error(responseData.message || 'Failed to fetch staff member');
+        const response = await axiosInstance.get(url);
+        const responseData = response.data;
+        if (responseData.success) {
+          setStaff(responseData);
+          return { success: true, staff: responseData };
+        } else {
+          setError({
+            message: responseData.message || "Failed to fetch staff member",
+          });
+          toast.error(responseData.message || "Failed to fetch staff member");
+          return { success: false };
+        }
+      } catch (err) {
+        setError({
+          message: "Failed to fetch staff member",
+          details: err.response?.data?.message || err.message,
+        });
+        toast.error(
+          err.response?.data?.message ||
+            err.message ||
+            "Failed to fetch staff member"
+        );
         return { success: false };
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError({
-        message: 'Failed to fetch staff member',
-        details: err.response?.data?.message || err.message,
-      });
-      toast.error(err.response?.data?.message || err.message || 'Failed to fetch staff member');
-      return { success: false };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const reset = () => {
     setStaff(null);
@@ -618,4 +767,3 @@ export const useGetPublicStaffById = () => {
 
   return { staff, loading, error, getPublicStaffById, reset };
 };
-

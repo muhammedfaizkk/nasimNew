@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import StaffInfoCard from './staffdetails/StaffInfoCard';
-import StaffTabs from './staffdetails/StaffTabs';
-import StaffLeavesTab from './staffdetails/StaffLeavesTab';
-import StaffAdvancesTab from './staffdetails/StaffAdvancesTab';
-import StaffIncrementsTab from './staffdetails/StaffIncrementsTab';
-import AddStaff from '../../components/admin/forms/AddStaff';
+import StaffInfoCard from "./staffdetails/StaffInfoCard";
+import StaffTabs from "./staffdetails/StaffTabs";
+import StaffLeavesTab from "./staffdetails/StaffLeavesTab";
+import StaffAdvancesTab from "./staffdetails/StaffAdvancesTab";
+import StaffIncrementsTab from "./staffdetails/StaffIncrementsTab";
+import AddStaff from "../../components/admin/forms/AddStaff";
 
 import {
   useAddStaffLeave,
@@ -16,20 +16,20 @@ import {
   useDeleteStaffLeave,
   useAddWageIncrement,
   useEditWageIncrement,
-} from '../../hooks/staff/Addstaffhooks';
+} from "../../hooks/staff/Addstaffhooks";
 
-import LoadingSpinner from '../../components/admin/LoadingSpinner';
-import StaffNotFound from '../../components/admin/StaffNotFound';
-import BackButton from '../../components/admin/BackButton';
+import LoadingSpinner from "../../components/admin/LoadingSpinner";
+import StaffNotFound from "../../components/admin/StaffNotFound";
+import BackButton from "../../components/admin/BackButton";
 
 const StaffDetail = () => {
   const { staffId } = useParams();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('leaves');
+  const [activeTab, setActiveTab] = useState("leaves");
   const [showFilter, setShowFilter] = useState(false);
   const [showLeaveForm, setShowLeaveForm] = useState(false);
-  const [dateFilter, setDateFilter] = useState({ startDate: '', endDate: '' });
+  const [dateFilter, setDateFilter] = useState({ startDate: "", endDate: "" });
   const [showEditModal, setShowEditModal] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState(null);
@@ -40,7 +40,6 @@ const StaffDetail = () => {
     loading: staffLoading,
     error: staffError,
     getPublicStaffById,
-    reset: resetPublicStaff,
   } = useGetPublicStaffById();
 
   const {
@@ -54,22 +53,16 @@ const StaffDetail = () => {
     loading: deleteLoading,
     error: deleteError,
     deleteStaff,
-    reset: resetDelete,
   } = useDeleteStaff();
 
   const {
     loading: updateLoading,
     error: updateError,
     updateStaff,
-    reset: resetUpdate,
   } = useUpdateStaff();
 
-  const {
-    loading: deleteLeaveLoading,
-    error: deleteLeaveError,
-    deleteStaffLeave,
-    reset: resetDeleteLeave,
-  } = useDeleteStaffLeave();
+  const { loading: deleteLeaveLoading, deleteStaffLeave } =
+    useDeleteStaffLeave();
 
   const {
     loading: addIncrementLoading,
@@ -87,7 +80,7 @@ const StaffDetail = () => {
 
   // fetch staff
   useEffect(() => {
-    if (staffId && typeof staffId === 'string' && staffId.trim() !== '') {
+    if (staffId && typeof staffId === "string" && staffId.trim() !== "") {
       getPublicStaffById(staffId, dateFilter.startDate, dateFilter.endDate);
     }
   }, [staffId, dateFilter, getPublicStaffById]);
@@ -106,16 +99,18 @@ const StaffDetail = () => {
       if (!id) return;
       const result = await deleteStaff(id);
       if (result.success) {
-        navigate('/');
+        navigate("/");
       }
     },
     [deleteStaff, navigate]
   );
 
-  // wage increment add/edit
   const handleEditWage = useCallback(
     async (wageData) => {
-      if (!staffData?.data?.staff?._id) return;
+      if (!staffData?.data?.staff?._id) {
+        setEditError("Staff ID is missing");
+        return;
+      }
       setEditLoading(true);
       setEditError(null);
       try {
@@ -125,23 +120,41 @@ const StaffDetail = () => {
         const baseWage = staffData?.data?.staff?.currentDailyWage || 1;
 
         if (incrementId) {
-          result = await editWageIncrement(staffData.data.staff._id, incrementId, updateFields);
+          // Edit mode: Ensure incrementId is valid
+          if (typeof incrementId !== "string" || incrementId.trim() === "") {
+            throw new Error("Invalid increment ID provided");
+          }
+          result = await editWageIncrement(staffId, incrementId, updateFields);
         } else {
-          result = await addWageIncrement(staffData.data.staff._id, {
+          // Add mode
+          result = await addWageIncrement(staffId, {
             ...updateFields,
             previousWage: baseWage,
             incrementAmount: updateFields.newWage - baseWage,
-            incrementPercentage: (((updateFields.newWage - baseWage) / baseWage) * 100).toFixed(2),
+            incrementPercentage: (
+              ((updateFields.newWage - baseWage) / baseWage) *
+              100
+            ).toFixed(2),
           });
         }
 
         if (result.success) {
-          await getPublicStaffById(staffId, dateFilter.startDate, dateFilter.endDate);
+          await getPublicStaffById(
+            staffId,
+            dateFilter.startDate,
+            dateFilter.endDate
+          );
         } else {
-          setEditError(updateIncrementError || addIncrementError || 'Failed to update wage');
+          setEditError(
+            (incrementId ? updateIncrementError : addIncrementError) ||
+              `Failed to ${incrementId ? "update" : "add"} wage increment`
+          );
         }
       } catch (err) {
-        setEditError(err.message || 'Failed to update wage');
+        setEditError(
+          err.message ||
+            `Failed to ${incrementId ? "update" : "add"} wage increment`
+        );
       } finally {
         setEditLoading(false);
       }
@@ -166,13 +179,17 @@ const StaffDetail = () => {
     try {
       const result = await updateStaff(staffData.data.staff._id, formData);
       if (result.success) {
-        await getPublicStaffById(staffId, dateFilter.startDate, dateFilter.endDate);
+        await getPublicStaffById(
+          staffId,
+          dateFilter.startDate,
+          dateFilter.endDate
+        );
         setShowEditModal(false);
       } else {
-        setEditError(updateError || 'Failed to update staff');
+        setEditError(updateError || "Failed to update staff");
       }
     } catch (err) {
-      setEditError(err.message || 'Failed to update staff');
+      setEditError(err.message || "Failed to update staff");
     } finally {
       setEditLoading(false);
     }
@@ -183,23 +200,32 @@ const StaffDetail = () => {
     try {
       const result = await addStaffLeave(staffId, leaveData);
       if (result.success) {
-        await getPublicStaffById(staffId, dateFilter.startDate, dateFilter.endDate);
+        await getPublicStaffById(
+          staffId,
+          dateFilter.startDate,
+          dateFilter.endDate
+        );
         setShowLeaveForm(false);
         resetAddLeave();
       } else {
-        console.error('Error submitting leave:', addLeaveError);
+        console.error("Error submitting leave:", addLeaveError);
       }
     } catch (error) {
-      console.error('Error submitting leave:', error);
+      console.error("Error submitting leave:", error);
     }
   };
 
   const handleBack = () => {
-    navigate('/admin/staff');
+    navigate("/admin/staff");
   };
 
   const isLoading =
-    staffLoading || deleteLoading || updateLoading || editLoading || addIncrementLoading || updateIncrementLoading;
+    staffLoading ||
+    deleteLoading ||
+    updateLoading ||
+    editLoading ||
+    addIncrementLoading ||
+    updateIncrementLoading;
 
   if (isLoading && !staffData) {
     return <LoadingSpinner message="Loading staff details..." />;
@@ -229,17 +255,23 @@ const StaffDetail = () => {
     finalSalary: finances?.finalSalary ?? 0,
   };
 
-  const safeLeaveData = Array.isArray(attendance?.leaveData) ? attendance.leaveData : [];
-  const safeAdvances = Array.isArray(finances?.advances) ? finances.advances : [];
+  const safeLeaveData = Array.isArray(attendance?.leaveData)
+    ? attendance.leaveData
+    : [];
+  const safeAdvances = Array.isArray(finances?.advances)
+    ? finances.advances
+    : [];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-0 sm:p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen p-0 bg-gray-50 sm:p-6">
+      <div className="mx-auto max-w-7xl">
         <BackButton onBack={handleBack} />
 
         {/* show global errors */}
         {(staffError || deleteError || updateError || editError) && (
-          <p className="text-red-500 mb-4">{staffError || deleteError || updateError || editError}</p>
+          <p className="mb-4 text-red-500">
+            {staffError || deleteError || updateError || editError}
+          </p>
         )}
 
         <StaffInfoCard
@@ -262,15 +294,21 @@ const StaffDetail = () => {
           incrementLoading={addIncrementLoading || updateIncrementLoading}
         />
 
-        <div className="bg-white rounded-xl shadow-md border p-1 sm:p-6">
-          {activeTab === 'leaves' && (
+        <div className="p-1 bg-white border shadow-md rounded-xl sm:p-6">
+          {activeTab === "leaves" && (
             <StaffLeavesTab
               staffId={staff?._id}
               leaves={safeLeaveData}
               leavesLoading={isLoading}
               showLeaveForm={showLeaveForm}
               setShowLeaveForm={setShowLeaveForm}
-              handleRefreshLeaves={() => getPublicStaffById(staff?._id, dateFilter.startDate, dateFilter.endDate)}
+              handleRefreshLeaves={() =>
+                getPublicStaffById(
+                  staff?._id,
+                  dateFilter.startDate,
+                  dateFilter.endDate
+                )
+              }
               handleLeaveSubmit={handleLeaveSubmit}
               addLeaveLoading={addLeaveLoading}
               resetAddLeave={resetAddLeave}
@@ -279,17 +317,24 @@ const StaffDetail = () => {
             />
           )}
 
-          {activeTab === 'payments' && (
+          {activeTab === "payments" && (
             <StaffAdvancesTab
               staffId={staff?._id}
               staffAdvances={safeAdvances}
               advancesLoading={isLoading}
-              handleRefreshAdvances={() => getPublicStaffById(staff?._id, dateFilter.startDate, dateFilter.endDate)}
+              handleRefreshAdvances={() =>
+                getPublicStaffById(
+                  staff?._id,
+                  dateFilter.startDate,
+                  dateFilter.endDate
+                )
+              }
             />
           )}
 
-          {activeTab === 'increments' && (
+          {activeTab === "increments" && (
             <StaffIncrementsTab
+              staffId={staffId}
               incrementHistory={wageInfo?.wageIncrements || []}
               incrementLoading={addIncrementLoading || updateIncrementLoading}
               incrementsThisMonth={wageInfo?.wageIncrementsThisMonth || []}

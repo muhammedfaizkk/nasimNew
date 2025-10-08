@@ -1,13 +1,7 @@
 import React from "react";
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
-// Styles
+// ✅ Styles
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Helvetica",
@@ -118,7 +112,28 @@ const styles = StyleSheet.create({
   },
 });
 
-// Component
+// ✅ Format currency (Rupee + commas)
+const formatCurrency = (amount) => {
+  if (!amount && amount !== 0) return "";
+  return amount.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
+
+// ✅ Format date (DD/MM/YYYY)
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+// ✅ Component
 export default function Invoice({ invoice }) {
   if (!invoice) {
     return (
@@ -136,25 +151,22 @@ export default function Invoice({ invoice }) {
         {/* Header */}
         <View style={[styles.row, styles.spaceBetween, styles.header]}>
           <View>
-            <Text style={styles.companyName}>Xpress Enterprises</Text>
-            <Text>www.xpresscompany.com</Text>
-            <Text>Email: support@xpress.com</Text>
-            <Text>Phone: +91 9876543210</Text>
+            <Text style={styles.companyName}>Spark Construction</Text>
+            <Text>Email: nasimkk27@gmail.com</Text>
+            <Text>Phone: +91 9847272724</Text>
           </View>
           <View style={styles.rightInfo}>
-            <Text>7, Ademola Odede</Text>
-            <Text>Ikeja, Lagos</Text>
-            <Text>Nigeria</Text>
+            <Text>Othukkungal, Cherukunnu</Text>
+            <Text>Kerala, India - 676528</Text>
           </View>
         </View>
 
-        {/* Invoice Label & Balance Due */}
+        {/* Invoice Label */}
         <View style={styles.invoiceLabelBox}>
           <Text style={styles.invoiceTitle}>INVOICE</Text>
-          <Text style={styles.balanceDue}>Balance Due: ₹{invoice.subtotal}</Text>
         </View>
 
-        {/* Invoice Number and Date */}
+        {/* Invoice Info */}
         <View style={[styles.row, styles.spaceBetween]}>
           <View style={styles.billSection}>
             <Text style={styles.billTo}>Billed To:</Text>
@@ -163,7 +175,7 @@ export default function Invoice({ invoice }) {
           </View>
           <View style={styles.billSection}>
             <Text style={styles.billTo}>Invoice Date:</Text>
-            <Text>{invoice.invoiceDate}</Text>
+            <Text>{formatDate(invoice.invoiceDate)}</Text>
           </View>
         </View>
 
@@ -179,31 +191,30 @@ export default function Invoice({ invoice }) {
           {invoice.items?.map((item, i) => (
             <View style={styles.tableRow} key={i}>
               <Text style={styles.td}>{item.description}</Text>
-              <Text style={[styles.td, styles.tdPrice]}>{item.rate}</Text>
+              <Text style={[styles.td, styles.tdPrice]}>
+                {formatCurrency(item.rate)}
+              </Text>
               <Text style={[styles.td, styles.tdQty]}>{item.quantity}</Text>
-              <Text style={[styles.td, styles.tdAmount]}>{item.amount}</Text>
+              <Text style={[styles.td, styles.tdAmount]}>
+                {formatCurrency(item.amount)}
+              </Text>
             </View>
           ))}
 
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>₹{invoice.subtotal}</Text>
+            <Text style={styles.totalValue}>
+              {formatCurrency(invoice.subtotal)}
+            </Text>
           </View>
-        </View>
-
-        {/* Payment Method */}
-        <Text style={styles.sectionTitle}>Payment / Method</Text>
-        <View>
-          <Text>Bank Name: HDFC Bank</Text>
-          <Text>Bank Number: 123456789</Text>
-          <Text>UPI: samvedha@hdfc</Text>
         </View>
 
         {/* Terms & Conditions */}
         <Text style={styles.sectionTitle}>Terms & Conditions</Text>
         <View style={styles.terms}>
-          <Text>1. One year support included.</Text>
-          <Text>2. Any future changes may incur additional costs.</Text>
+          <Text>1. Prices quoted are valid for 15 days from the proposal date.</Text>
+          <Text>2. Any additional work or material change will be charged separately.</Text>
+          <Text>3. Work commencement is subject to receipt of advance payment.</Text>
         </View>
 
         {/* Signature */}

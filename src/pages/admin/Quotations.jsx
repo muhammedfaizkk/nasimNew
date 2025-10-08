@@ -12,7 +12,7 @@ const Quotations = () => {
     const { invoices, loading: fetchLoading, error: fetchError, refetch, setSearchTerm: setInvoiceSearchTerm } = useFetchInvoices();
     const { addInvoice, loading: addLoading, error: addError, success: addSuccess, reset: resetAdd } = useAddInvoice();
     const { updateInvoice, loading: updateLoading, error: updateError, success: updateSuccess, reset: resetUpdate } = useUpdateInvoice();
-    const { deleteInvoice, loading: deleteLoading, error: deleteError, success: deleteSuccess, reset: resetDelete } = useDeleteInvoice();
+    const { deleteInvoice, loading: deleteLoading,  success: deleteSuccess, reset: resetDelete } = useDeleteInvoice();
   
     useEffect(() => {
       if (addSuccess || updateSuccess) {
@@ -94,13 +94,13 @@ const Quotations = () => {
           />
         </div>
         {/* Cards for mobile */}
-        <div className="block md:hidden p-2">
+        <div className="block p-2 md:hidden">
           {invoices.length === 0 && !fetchLoading && (
-            <div className="text-center text-gray-500 py-8">No invoices found</div>
+            <div className="py-8 text-center text-gray-500">No invoices found</div>
           )}
           {fetchLoading && (
-            <div className="flex justify-center items-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+            <div className="flex items-center justify-center py-8">
+              <div className="w-8 h-8 border-2 border-blue-600 rounded-full animate-spin border-t-transparent"></div>
             </div>
           )}
           {invoices.map((invoice) => (

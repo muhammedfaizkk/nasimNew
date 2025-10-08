@@ -82,7 +82,7 @@ export default function StaffAdvancePayment({
       <div className="flex items-center justify-center py-8">
         <div className="flex items-center">
           <svg
-            className="animate-spin h-5 w-5 text-blue-600 mr-2"
+            className="w-5 h-5 mr-2 text-blue-600 animate-spin"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -110,7 +110,7 @@ export default function StaffAdvancePayment({
   return (
     <div className="space-y-4">
       {/* Header with Add Button */}
-      <div className="flex justify-between items-center mb-4 p-3 p-sm-0">
+      <div className="flex items-center justify-between p-3 mb-4 p-sm-0">
         <h3 className="text-lg font-semibold">Advance Payments</h3>
         <button
           onClick={() => setShowAddForm(true)}
@@ -124,15 +124,15 @@ export default function StaffAdvancePayment({
 
       {/* Error messages */}
       {addError && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+        <div className="p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500">
           <p>{addError.message}</p>
-          {addError.details && <p className="text-sm mt-1">{addError.details}</p>}
+          {addError.details && <p className="mt-1 text-sm">{addError.details}</p>}
         </div>
       )}
       {deleteError && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+        <div className="p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500">
           <p>{deleteError.message}</p>
-          {deleteError.details && <p className="text-sm mt-1">{deleteError.details}</p>}
+          {deleteError.details && <p className="mt-1 text-sm">{deleteError.details}</p>}
         </div>
       )}
 
@@ -141,13 +141,16 @@ export default function StaffAdvancePayment({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                 Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                note
+              </th>
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                 Amount
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                 Actions
               </th>
             </tr>
@@ -155,21 +158,24 @@ export default function StaffAdvancePayment({
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredAdvances.map((advance) => (
               <tr key={advance._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                   {new Date(advance.date).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
+                <td className="px-6 py-4 text-sm font-medium text-green-600 whitespace-nowrap">
+                  {advance.note}
+                </td>
+                <td className="px-6 py-4 text-sm font-medium text-green-600 whitespace-nowrap">
                   ₹{advance.amount?.toLocaleString()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                   <button
                     onClick={() => handleDeleteClick(advance)}
                     disabled={deleteLoading === advance._id}
-                    className="flex items-center gap-1 px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1 px-2 py-1 text-xs text-red-700 transition-colors bg-red-100 rounded hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {deleteLoading === advance._id ? (
                       <>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-700"></div>
+                        <div className="w-3 h-3 border-b-2 border-red-700 rounded-full animate-spin"></div>
                         Deleting...
                       </>
                     ) : (
@@ -186,7 +192,7 @@ export default function StaffAdvancePayment({
         </table>
 
         {filteredAdvances.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="py-8 text-center text-gray-500">
             {dateFilter ? 'No advance payments found for the selected date range' : 'No advance payments found'}
           </div>
         )}
@@ -194,14 +200,14 @@ export default function StaffAdvancePayment({
 
       {/* Summary */}
       {filteredAdvances.length > 0 && (
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="flex justify-between items-center text-sm">
+        <div className="p-4 rounded-lg bg-gray-50">
+          <div className="flex items-center justify-between text-sm">
             <span className="font-medium text-gray-700">Total Advances:</span>
             <span className="font-semibold text-green-600">
               ₹{filteredAdvances.reduce((sum, advance) => sum + (advance.amount || 0), 0).toLocaleString()}
             </span>
           </div>
-          <div className="flex justify-between items-center text-sm mt-1">
+          <div className="flex items-center justify-between mt-1 text-sm">
             <span className="font-medium text-gray-700">Total Records:</span>
             <span className="font-semibold text-gray-600">
               {filteredAdvances.length}

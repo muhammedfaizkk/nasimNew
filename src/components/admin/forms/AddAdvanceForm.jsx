@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Trash2, Plus } from 'lucide-react';
 
-export default function AddAdvanceForm({ staffId, onClose, onSubmit, loading }) {
+export default function AddAdvanceForm({onClose, onSubmit, loading }) {
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     amount: '',
@@ -31,9 +31,9 @@ export default function AddAdvanceForm({ staffId, onClose, onSubmit, loading }) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-md w-full p-6">
-        <div className="flex justify-between items-center mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Add Advance Payment</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />
@@ -42,7 +42,7 @@ export default function AddAdvanceForm({ staffId, onClose, onSubmit, loading }) 
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               Date *
             </label>
             <input
@@ -53,11 +53,11 @@ export default function AddAdvanceForm({ staffId, onClose, onSubmit, loading }) 
                 errors.date ? 'border-red-500' : 'border-gray-300'
               }`}
             />
-            {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
+            {errors.date && <p className="mt-1 text-xs text-red-500">{errors.date}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               Amount (₹) *
             </label>
             <input
@@ -71,18 +71,18 @@ export default function AddAdvanceForm({ staffId, onClose, onSubmit, loading }) 
               }`}
               placeholder="Enter amount"
             />
-            {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
+            {errors.amount && <p className="mt-1 text-xs text-red-500">{errors.amount}</p>}
           </div>
 
           {/* Note Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               Note
             </label>
             <textarea
               value={formData.note}
               onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Add a note (optional)"
               rows={3}
             />
@@ -93,11 +93,11 @@ export default function AddAdvanceForm({ staffId, onClose, onSubmit, loading }) 
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex items-center justify-center flex-1 px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
                   Adding...
                 </>
               ) : (

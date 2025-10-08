@@ -1,11 +1,11 @@
 import React from "react";
 import { FiEdit, FiTrash2, FiDownload } from "react-icons/fi";
-import { handleDownload } from "./HandleDownloadpdf";
+import handleDownload from "./HandleDownloadpdf";
 
 const InvoiceCard = ({ invoice, onEdit, onDelete, deleteLoading }) => (
-  <div className="bg-white rounded-lg shadow p-4 mb-4">
-    <div className="flex justify-between items-center mb-2">
-      <div className="font-bold text-lg">{invoice.invoiceNo}</div>
+  <div className="p-4 mb-4 bg-white rounded-lg shadow">
+    <div className="flex items-center justify-between mb-2">
+      <div className="text-lg font-bold">{invoice.invoiceNo}</div>
       <div className="flex space-x-2">
         <button onClick={() => onEdit(invoice)} className="text-blue-600">
           <FiEdit />
